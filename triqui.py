@@ -23,8 +23,8 @@ def player1(board):
             board[square]= 1
             return board
     print("Something go wrong, try it again")
-    print(board)
-    player1(board)
+    seeBoard(board)
+    return player1(board)
 def player2(board):
     square= int(input("select the place from 1 to 9 or 0 to reset the game "))
     if square== 0:
@@ -36,8 +36,8 @@ def player2(board):
             board[square]= -1
             return board
         print("Something go wrong, try it again")
-        print(board)
-        player2(board)
+        seeBoard(board)
+        return player2(board)
 def win(board):
     lines= [
         [0, 1, 2],
