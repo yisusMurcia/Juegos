@@ -50,7 +50,7 @@ def player(board):
     if square in "0123456789":
         square= int(square)
         if square== 0:
-            board= startingBoard
+            board= startingBoard[:]
             return board
         square-= 1
         if len(str(square))==1:

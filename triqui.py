@@ -15,7 +15,7 @@ def seeBoard(board):
 def player1(board):
     square=int(input("select the place from 1 to 9 or 0 to reset the game "))
     if square== 0:
-        board= startingBoard
+        board= startingBoard[:]
         return board
     square-= 1
     if str(square) in "012345678" and len(str(square))==1:
@@ -28,7 +28,7 @@ def player1(board):
 def player2(board):
     square= int(input("select the place from 1 to 9 or 0 to reset the game "))
     if square== 0:
-        board= startingBoard
+        board= startingBoard[:]
         return board
     square-= 1
     if str(square) in "012345678" and len(str(square))==1:
