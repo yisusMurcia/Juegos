@@ -6,7 +6,7 @@ def seeBoard(board):
         for j in range(0, 3):
             if (board[i*3+j]== 1):
                 line.append("x")
-            elif (board[i*3+j]==-1):
+            elif (board[i*3+j]==2):
                 line.append("o")
             else:
                 line.append(" ")
@@ -33,7 +33,7 @@ def player2(board):
     square-= 1
     if str(square) in "012345678" and len(str(square))==1:
         if board[square]==0:
-            board[square]= -1
+            board[square]= 2
             return board
         print("Something go wrong, try it again")
         seeBoard(board)
@@ -54,20 +54,27 @@ def win(board):
             print("game over!")
             print ("winner: player "+ str(board[line[0]]))
             return True
-play= True
-board= [0, 0, 0, 0, 0, 0, 0, 0, 0]
-turn1= True
-seeBoard(board)
-while play and 0 in board:
-    if turn1:
-        board= player1(board)
-        turn1= False
-    else:
-        board= player2(board)
+
+def play():
+    loop= True
+    while loop:
+        board= [0, 0, 0, 0, 0, 0, 0, 0, 0]
         turn1= True
-    seeBoard(board)
-    if not 0 in board:
-        print("tie")
-    if win(board):
-        play= False
-        break
+        seeBoard(board)
+        while 0 in board:
+            if turn1:
+                board= player1(board)
+                turn1= False
+            else:
+                board= player2(board)
+                turn1= True
+            seeBoard(board)
+            if not 0 in board:
+                print("tie")
+            if win(board):
+                play= False
+                break
+        again= input("For play again type 'yes'")
+        if again!= "yes":
+            loop= False
+play()

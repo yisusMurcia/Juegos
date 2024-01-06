@@ -91,27 +91,34 @@ def win(board):
     else:
         return None
     
-board= [0, 0, 0, 0, 0, 0, 0, 0, 0]
-turn1= True
-
-seeBoard(board)
-while 0 in board:
-    if turn1:
-        board= player(board)
-        turn1= False
-    else:
-        board= machinePlay(board)
-        print("Machine turne, moving: "+ str(machineMove+1))
+def play():
+    loop= True
+    while loop:
+        board= [0, 0, 0, 0, 0, 0, 0, 0, 0]
         turn1= True
-    seeBoard(board)
-    if win(board)!= None:
-        print("game over!")
-        if win(board)==0:
-            print("tie")
-            break
-        elif win(board)== MAX:
-            winner= "Machine"
-        else:
-            winner= "plaver"
-        print ("winner:"+ str(winner))
-        break
+
+        seeBoard(board)
+        while 0 in board:
+            if turn1:
+                board= player(board)
+                turn1= False
+            else:
+                board= machinePlay(board)
+                print("Machine turne, moving: "+ str(machineMove+1))
+                turn1= True
+            seeBoard(board)
+            if win(board)!= None:
+                print("game over!")
+                if win(board)==0:
+                    print("tie")
+                    break
+                elif win(board)== MAX:
+                    winner= "Machine"
+                else:
+                    winner= "plaver"
+                print ("winner:"+ str(winner))
+                break
+        again= input("For play again type 'yes'")
+        if again!= "yes":
+            loop= False
+play()
