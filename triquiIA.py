@@ -45,7 +45,7 @@ def seeBoard(board):
         print(squeares)
         print(line)
 
-def player(board):
+def player(board, num= -1):
     square=input("select the place from 1 to 9 or 0 to reset the game ")
     if square in "0123456789":
         square= int(square)
@@ -55,7 +55,7 @@ def player(board):
         square-= 1
         if len(str(square))==1:
             if board[square]==0:
-                board[square]= -1
+                board[square]= num
                 return board
     print("Something go wrong, try it again")
     seeBoard(board)
@@ -94,6 +94,14 @@ def win(board):
 def play():
     loop= True
     while loop:
+        twoPlayers= None
+        while twoPlayers== None:
+            numOfPlayers= input("1 or 2 players")
+            if numOfPlayers in "12":
+                twoPlayers= int(numOfPlayers)== 2
+                print("Play for "+ str(numOfPlayers))
+            else:
+                print("Select 1 or 2")
         board= [0, 0, 0, 0, 0, 0, 0, 0, 0]
         turn1= True
 
@@ -103,8 +111,11 @@ def play():
                 board= player(board)
                 turn1= False
             else:
-                board= machinePlay(board)
-                print("Machine turne, moving: "+ str(machineMove+1))
+                if twoPlayers:
+                    board= player(board, 1)
+                else:
+                    board= machinePlay(board)
+                    print("Machine turne, moving: "+ str(machineMove+1))
                 turn1= True
             seeBoard(board)
             if win(board)!= None:
@@ -113,10 +124,15 @@ def play():
                     print("tie")
                     break
                 elif win(board)== MAX:
-                    winner= "Machine"
+                    if twoPlayers:
+                        winner= "player 2"
+                    else:
+                        winner= "Machine"
                 else:
-                    winner= "plaver"
-                print ("winner:"+ str(winner))
+                    winner= "player"
+                    if twoPlayers:
+                        winner+= " 1"
+                print ("winner: "+ str(winner))
                 break
         again= input("For play again type 'yes'")
         if again!= "yes":
