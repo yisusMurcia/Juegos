@@ -11,7 +11,8 @@ def seeBoard(board):
             else:
                 line.append(" ")
         print(line)
-
+    nums= [str(i) for i in range(1, 8)]
+    print(nums)
 def player(board, num=-1):
     column= input("Select a column")
     if column in "1234567":
