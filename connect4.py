@@ -20,6 +20,9 @@ def player(board, num=-1):
             if board[column+7*i] == 0:
                 board[column+7*i]= num
                 return board
+    else:
+        print("Something is wrong try again")
+        return player(board, num)
 
 def tie(board):
     if 0 in board:
@@ -96,13 +99,20 @@ def win(board):
                     i+= disntance
     return False
 
-board= startedBoard[:]
-seeBoard(board)
-turn= 1
-while not tie(board):
-    board= player(board, turn)
-    turn*=-1
-    seeBoard(board)
-    if win(board):
-        print("game over")
-        break
+def play():
+    loop= True
+    while loop:
+        board= startedBoard[:]
+        seeBoard(board)
+        turn= 1
+        while not tie(board):
+            board= player(board, turn)
+            turn*=-1
+            seeBoard(board)
+            if win(board):
+                print("game over")
+                break
+        playAgain= input("Type 'yes' for playe again")
+        if playAgain!= "yes":
+            loop= False
+play()
