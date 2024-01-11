@@ -59,7 +59,7 @@ def player(board, num= -1):
                 return board
     print("Something go wrong, try it again")
     seeBoard(board)
-    return player(board)
+    return player(board, num)
 
 def machinePlay(board):
     global machineMove
