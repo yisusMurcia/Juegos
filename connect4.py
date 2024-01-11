@@ -1,6 +1,4 @@
 startedBoard= [0 for i in range(0, 49)]
-for i in range(1, 4):
-    startedBoard[i*7+i]= 1
 def seeBoard(board):
     for i in range(0, 7):
         line= []
