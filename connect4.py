@@ -1,5 +1,6 @@
 startedBoard= [0 for i in range(0, 49)]
-
+for i in range(1, 4):
+    startedBoard[i*7+i]= 1
 def seeBoard(board):
     for i in range(0, 7):
         line= []
@@ -52,6 +53,49 @@ def win(board):
                     return True
             else:
                 count= 0
+    #diagonal
+    diagonalPoints= [
+        [21, 3],
+        [21, 45],
+        [27, 3],
+        [27, 45],
+        [22, 10],
+        [22, 38],
+        [26, 10],
+        [26, 38],
+        [23, 17],
+        [23, 31],
+        [25, 17],
+        [25, 31],
+        [24, 24]
+    ]
+    player= 0
+    potentialDiagonal= False
+    for points in diagonalPoints:
+        if board[points[0]]==0:
+            continue
+        if board[points[0]]== board[points[1]]:
+            player= board[points[0]]
+            potentialDiagonal= True
+        if potentialDiagonal:
+            pointsDistances= [8, 6]
+            for disntance in pointsDistances:
+                count= 0
+                i= points[0]
+                while board[i]== player and i>= 0:
+                    i-=disntance
+                #Restaurar el inicio de la conexión
+                #Restore the start of the connection
+                i+= disntance
+                while i <49:
+                    if board[i]== player:
+                        count+= 1
+                        if count==4:
+                            return True
+                    else:
+                        count= 0
+                        break
+                    i+= disntance
     return False
 
 board= startedBoard[:]
