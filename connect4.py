@@ -32,28 +32,32 @@ def tie(board):
 
 def win(board):
     for i in range (0, 7):
-        count= 0
         #vertical
         if board[21+i]!= 0:
-            for j in range(0, 7):
-                if board[j*7+i]== board[21+i]:
-                    count+=1
-                    if count==3:
-                        return True
-                else:
-                    count= 0
-        for j in range(0, 7):
-            #horizontal
-            if board[7*i+3]== 0:
-                break
-            if  j==3:
-                continue
-            if board[i*7+j]== board[i*7+3]:
-                count+=1
-                if count==3:
-                    return True
-            else:
-                count= 0
+            count= 0
+            player= board[21+i]
+            num= 21+i
+            while num>= 0 and board[num]== player:
+                num-= 7
+            num+=7
+            while board[num]== player:
+                num+= 7
+                count+= 1
+            if count== 4:
+                return True
+        #horizontal
+        if board[i*7+3]!= 0:
+            count= 0
+            player= board[7*i+3]
+            num= i*7+3
+            while board[num]== player and num>= i*7:
+                num-= 1
+            num+=1
+            while board[num]== player:
+                count+= 1
+                num+=1
+            if count== 4:
+                return True
     #diagonal
     diagonalPoints= [
         [21, 3],
