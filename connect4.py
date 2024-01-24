@@ -3,48 +3,59 @@ startedBoard= [0 for i in range(0, 49)]
 def evaluateBoard(board, player= 1):
     #Contar lineas posibles
     #Count possible lines
+    count1= 0
     count2= 0
     count3= 0
     count4= 0
     for i in range (0, 7):
         #vertical
-        if board[21+i]!= 0:
+        if board[21+i]!= player*-1:
             count= 0
             num= 21+i
-            while num>= 0 and board[num]== player:
+            while num>= 0 and board[num]== player*-1:
                 num-= 7
             num+=7
-            while board[num]== player:
-                num+= 7
-                count+= 1
+            while num< 49:
+                if board[num]!= player*-1:
+                    num+= 7
+                    count+= 1
+                else:
+                    break
             match count:
-                    case 1:
-                        break
-                    case 2:
-                        count2+= 1
-                    case 3:
-                        count3+=1
-                    case _:
-                        count4+= 1
+                case 0:
+                    None
+                case 1:
+                    count1+= 1
+                case 2:
+                    count2+= 1
+                case 3:
+                    count3+=1
+                case _:
+                    count4+= 1
         #horizontal
-        if board[i*7+3]!= 0:
+        if board[i*7+3]!= player*-1:
             count= 0
             num= i*7+3
-            while board[num]== player and num>= i*7:
+            while board[num]!= player*-1 and num>= i*7:
                 num-= 1
             num+=1
-            while board[num]== player:
-                count+= 1
-                num+=1
+            while num< 49:
+                if board[num]!= player*-1:
+                    count+= 1
+                    num+=1
+                else: 
+                    break
             match count:
-                    case 1:
-                        break
-                    case 2:
-                        count2+= 1
-                    case 3:
-                        count3+=1
-                    case _:
-                        count4+= 1
+                case 0:
+                    None
+                case 1:
+                    count1+= 1
+                case 2:
+                    count2+= 1
+                case 3:
+                    count3+=1
+                case _:
+                    count4+= 1
     #diagonal
     diagonalPoints= [
         [21, 3],
@@ -63,55 +74,57 @@ def evaluateBoard(board, player= 1):
     ]
     potentialDiagonal= False
     for points in diagonalPoints:
-        if board[points[0]]==0:
-            continue
-        if board[points[0]]== board[points[1]]:
-            player= board[points[0]]
+        if board[points[0]]!= player*-1 and board[points[1]]!= player*-1:
             potentialDiagonal= True
         if potentialDiagonal:
             pointsDistances= [8, 6]
             for disntance in pointsDistances:
                 count= 0
                 i= points[0]
-                while board[i]== player and i>= 0:
+                while board[i]!= player*-1 and i>= 0:
                     i-=disntance
                 #Restaurar el inicio de la conexión
                 #Restore the start of the connection
                 i+= disntance
                 while i <49:
-                    if board[i]== player:
+                    if board[i]!= player*-1:
                         count+= 1
-                    i+= disntance
-                match count:
-                    case 1:
+                        i+= disntance
+                    else:
                         break
+                match count:
+                    case 0:
+                        None
+                    case 1:
+                        count1+= 1
                     case 2:
                         count2+= 1
                     case 3:
                         count3+=1
                     case _:
                         count4+= 1
-    return count2*2+ count3*9+ count4*100
+    return count1+ count2*2+ count3*9+ count4*100
 
 def sortMovements(x):
     return x[0]
 
 def minMax(board, turn, count= 0):
     global move
-    if win(board) or count== 6:
-        return evaluateBoard(board, 1)- evaluateBoard(board, turn*-1)
+    if win(board) or count== 4 or tie(board):
+        return evaluateBoard(board)* turn
     movements= []
     for i in range(0, 7):
         auxBoard= board[:]
         for j in range(0, 7):
-            if auxBoard[i+7*j]!= 0:
-                continue
-            auxBoard[i]= turn
-            puntuation= minMax(auxBoard, turn*-1, count+1)
-            movements.append([puntuation, i])
-            break
+            if auxBoard[i+7*j]== 0:
+                auxBoard[i]= turn
+                puntuation= minMax(auxBoard, turn*-1, count+1)
+                movements.append([puntuation, i])
+                break
     if turn== 1:
         movements.sort(key=sortMovements, reverse= True)
+        if count== 0:
+            print (movements)
         movement= movements[0]
         move= movement[1]
         return movement[0]
