@@ -1,61 +1,72 @@
 startedBoard= [0 for i in range(0, 49)]
 
+def mark(board, turn, column):
+    newBoard= board[:]
+    for i in range(0, 7):
+            num= column+7*i
+            if num> 49:
+                break
+            elif board[num] == 0:
+                newBoard[num]= turn
+                break
+    return newBoard
+
 def evaluateBoard(board, player= 1):
     #Contar lineas posibles
     #Count possible lines
-    count1= 0
     count2= 0
     count3= 0
     count4= 0
+    enemy= player*-1
     for i in range (0, 7):
         #vertical
-        if board[21+i]!= player*-1:
+        if board[21+i]!= enemy:
             count= 0
             num= 21+i
-            while num>= 0 and board[num]== player*-1:
+            while num>= 0 and board[num]!= enemy:
                 num-= 7
             num+=7
-            while num< 49:
-                if board[num]!= player*-1:
+            while num<=41+i:
+                if board[num]!= player:
                     num+= 7
                     count+= 1
                 else:
+                    if count> 3:
+                        count4+=1
                     break
             match count:
-                case 0:
-                    None
-                case 1:
-                    count1+= 1
-                case 2:
-                    count2+= 1
-                case 3:
-                    count3+=1
-                case _:
-                    count4+= 1
+                    case 1:
+                        break
+                    case 2:
+                        count2+= 1
+                    case 3:
+                        count3+=1
+                    case _:
+                        count4+= 1
         #horizontal
-        if board[i*7+3]!= player*-1:
+        if board[i*7+3]!= enemy:
             count= 0
             num= i*7+3
-            while board[num]!= player*-1 and num>= i*7:
+            while num>= i*7 and board[num]!= enemy:
                 num-= 1
             num+=1
-            while num< 49:
-                if board[num]!= player*-1:
+            while num< (i+1)*7:
+                if board[num]!= enemy:
                     count+= 1
                     num+=1
-                else: 
+                else:
+                    if count> 3:
+                        count4+=1
                     break
             match count:
-                case 0:
-                    None
-                case 1:
-                    count1+= 1
-                case 2:
-                    count2+= 1
-                case 3:
-                    count3+=1
-                case _:
-                    count4+= 1
+                    case 1:
+                        break
+                    case 2:
+                        count2+= 1
+                    case 3:
+                        count3+=1
+                    case _:
+                        count4+= 1
     #diagonal
     diagonalPoints= [
         [21, 3],
@@ -72,59 +83,54 @@ def evaluateBoard(board, player= 1):
         [25, 31],
         [24, 24]
     ]
-    potentialDiagonal= False
     for points in diagonalPoints:
-        if board[points[0]]!= player*-1 and board[points[1]]!= player*-1:
-            potentialDiagonal= True
-        if potentialDiagonal:
+        if board[points[0]]!= enemy and board[points[0]]== board[points[1]]:
             pointsDistances= [8, 6]
             for disntance in pointsDistances:
                 count= 0
                 i= points[0]
-                while board[i]!= player*-1 and i>= 0:
+                while i>= 0 and board[i]!= enemy:
                     i-=disntance
                 #Restaurar el inicio de la conexión
                 #Restore the start of the connection
                 i+= disntance
                 while i <49:
-                    if board[i]!= player*-1:
+                    if board[i]!= enemy:
                         count+= 1
                         i+= disntance
                     else:
+                        if count> 3:
+                            count4+=1
                         break
                 match count:
-                    case 0:
-                        None
                     case 1:
-                        count1+= 1
+                        break
                     case 2:
                         count2+= 1
                     case 3:
                         count3+=1
                     case _:
                         count4+= 1
-    return count1+ count2*2+ count3*9+ count4*100
+    return count2*2+ count3*9+ count4*100
 
 def sortMovements(x):
     return x[0]
 
 def minMax(board, turn, count= 0):
     global move
-    if win(board) or count== 4 or tie(board):
-        return evaluateBoard(board)* turn
+    if win(board):
+        return 100*turn/count
+    if  count== 6 or tie(board):
+        return evaluateBoard(board, 1)- evaluateBoard(board, turn*-1)
     movements= []
     for i in range(0, 7):
         auxBoard= board[:]
-        for j in range(0, 7):
-            if auxBoard[i+7*j]== 0:
-                auxBoard[i]= turn
-                puntuation= minMax(auxBoard, turn*-1, count+1)
-                movements.append([puntuation, i])
-                break
+        markedBoard= mark(auxBoard, turn, i)
+        auxBoard= markedBoard
+        puntuation= minMax(auxBoard, turn*-1, count+1)
+        movements.append([puntuation, i])
     if turn== 1:
         movements.sort(key=sortMovements, reverse= True)
-        if count== 0:
-            print (movements)
         movement= movements[0]
         move= movement[1]
         return movement[0]
@@ -132,6 +138,7 @@ def minMax(board, turn, count= 0):
         movements.sort(key=sortMovements)
         movement= movements[0]
         return movement[0]
+
 def seeBoard(board):
     for i in range(0, 7):
         line= []
@@ -145,17 +152,18 @@ def seeBoard(board):
         print(line)
     nums= [str(i) for i in range(1, 8)]
     print(nums)
-def player(board, num=-1):
+
+def player(board, turn=-1):
     column= input("Select a column")
     if column in "1234567":
         column= int(column)-1
-        for i in range(0, 7):
-            if board[column+7*i] == 0:
-                board[column+7*i]= num
-                return board
-    else:
+    marking= mark(board, turn, column)
+    if marking== board:
         print("Something is wrong try again")
-        return player(board, num)
+        return player(board, turn)
+    else:
+        board= marking
+        return board
 
 def tie(board):
     if 0 in board:
@@ -173,7 +181,7 @@ def win(board):
             while num>= 0 and board[num]== player:
                 num-= 7
             num+=7
-            while board[num]== player:
+            while num< 49 and board[num]== player:
                 num+= 7
                 count+= 1
             if count== 4:
