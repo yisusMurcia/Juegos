@@ -119,7 +119,7 @@ def sortMovements(x):
 def minMax(board, turn, count= 0):
     global move
     if win(board):
-        return 100*turn/count
+        return 1000*turn*-1/count
     if  count== 6 or tie(board):
         return evaluateBoard(board, 1)- evaluateBoard(board, turn*-1)
     movements= []
