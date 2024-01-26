@@ -186,7 +186,7 @@ def win(board):
             while num< 49 and board[num]== player:
                 num+= 7
                 count+= 1
-            if count== 4:
+            if count>= 4:
                 return player
         #horizontal
         if board[i*7+3]!= 0:
@@ -199,7 +199,7 @@ def win(board):
             while board[num]== player:
                 count+= 1
                 num+=1
-            if count== 4:
+            if count>=4:
                 return player
     #diagonal
     diagonalPoints= [
@@ -238,7 +238,7 @@ def win(board):
                 while i <49:
                     if board[i]== player:
                         count+= 1
-                        if count==4:
+                        if count>=4:
                             return player
                     else:
                         count= 0
@@ -260,6 +260,9 @@ def play():
             board= player(board, turn)
             turn*=-1
             seeBoard(board)
+            if win(board):
+                print("game over")
+                break
             if not twoPlayer:
                     minMax(board, turn)
                     board= mark(board, 1, move)
