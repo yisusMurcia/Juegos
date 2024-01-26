@@ -120,12 +120,14 @@ def minMax(board, turn, count= 0):
     global move
     if win(board):
         return 1000*turn*-1/count
-    if  count== 6 or tie(board):
+    if  count== 4 or tie(board):
         return evaluateBoard(board, 1)- evaluateBoard(board, turn*-1)
     movements= []
     for i in range(0, 7):
         auxBoard= board[:]
         markedBoard= mark(auxBoard, turn, i)
+        if markedBoard== auxBoard:
+            continue
         auxBoard= markedBoard
         puntuation= minMax(auxBoard, turn*-1, count+1)
         movements.append([puntuation, i])
@@ -246,17 +248,24 @@ def win(board):
 
 def play():
     loop= True
+    twoPlayer= True
     while loop:
+        playersInput= input("One or two players")
+        if playersInput== "one" or playersInput== "1":
+            twoPlayer= False
         board= startedBoard[:]
         seeBoard(board)
-        turn= 1
+        turn= -1
         while not tie(board):
             board= player(board, turn)
             turn*=-1
             seeBoard(board)
-            if turn== 1:
-                minMax(board, turn)
-                print(move+1)
+            if not twoPlayer:
+                    minMax(board, turn)
+                    board= mark(board, 1, move)
+                    turn= -1
+                    seeBoard(board)
+                    print("Playing in "+str(move+1))
             if win(board):
                 print("game over")
                 break
