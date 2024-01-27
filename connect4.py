@@ -27,12 +27,13 @@ def evaluateBoard(board, player= 1):
                 num-= 7
             num+=7
             while num<=41+i:
-                if board[num]!= player:
+                if board[num]!= enemy:
                     num+= 7
                     count+= 1
                 else:
                     if count> 3:
                         count4+=1
+                    count= 1
                     break
             match count:
                     case 1:
@@ -57,6 +58,7 @@ def evaluateBoard(board, player= 1):
                 else:
                     if count> 3:
                         count4+=1
+                    count= 1
                     break
             match count:
                     case 1:
@@ -101,6 +103,7 @@ def evaluateBoard(board, player= 1):
                     else:
                         if count> 3:
                             count4+=1
+                        count= 1
                         break
                 match count:
                     case 1:
